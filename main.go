@@ -583,8 +583,8 @@ func side_layout_version_three(window *app.Window) error {
 							margins := layout.Inset{
 								Top:    unit.Dp(13),
 								Bottom: unit.Dp(13),
-								Left:   unit.Dp(0),
-								Right:  unit.Dp(0),
+								Left:   unit.Dp(10),
+								Right:  unit.Dp(10),
 							}
 							menu_button_layout := material.Button(theme, &menu_button, "Menu")
 							set_background_rect_colour(graphical_context, material.Button(theme, &menu_button, "Menu").Layout(graphical_context).Size, colours_list[6])
@@ -593,6 +593,7 @@ func side_layout_version_three(window *app.Window) error {
 							// // return label.Layout(graphical_context)
 							menu_button_layout.CornerRadius = unit.Dp(0)
 							menu_button_layout.Inset = margins
+							// menu_button_layout.TextSize = unit.Sp(10)
 							menu_button_layout.Background = colours_list[6]
 							return menu_button_layout.Layout(graphical_context)
 							// return menu_button_layout.Layout(graphical_context)
