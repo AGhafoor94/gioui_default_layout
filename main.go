@@ -540,16 +540,6 @@ func side_layout_version_three(window *app.Window) error {
 		case app.FrameEvent:
 			graphical_context := app.NewContext(&ops, event)
 
-			// if button_one.Clicked(graphical_context) {
-			// 	fmt.Println("button1 was clicked")
-			// }
-			// if button_two.Clicked(graphical_context) {
-			// 	fmt.Println("BUTTON 2 was clicked")
-			// }
-			// if button_three.Clicked(graphical_context) {
-			// 	fmt.Println("BUTTON 3 was clicked")
-			// }
-
 			if side_buttons[0].Clicked(graphical_context) {
 				fmt.Println("button1 was clicked")
 				show_selection = 1
@@ -576,7 +566,7 @@ func side_layout_version_three(window *app.Window) error {
 						Left:   unit.Dp(0),
 						Right:  unit.Dp(0),
 					}
-					label := material.Label(theme, unit.Sp(35), "Application Version 1")
+					label := material.Label(theme, unit.Sp(35), "HEADING")
 					label.Alignment = text.Middle
 					label.Color = color.NRGBA{R: 255, G: 255, B: 255, A: 255}
 					set_background_rect_colour(graphical_context, margins.Layout(graphical_context, label.Layout).Size, colours_list[6])
@@ -703,6 +693,22 @@ func side_layout_version_three(window *app.Window) error {
 						// 	},
 						// ),
 					)
+				}),
+				layout.Rigid(func(graphical_context layout.Context) layout.Dimensions {
+					margins := layout.Inset{
+						Top:    unit.Dp(15),
+						Bottom: unit.Dp(15),
+						Left:   unit.Dp(0),
+						Right:  unit.Dp(0),
+					}
+					label := material.Label(theme, unit.Sp(15), "FOOTER")
+					label.Alignment = text.Middle
+					label.Color = color.NRGBA{R: 0, G: 0, B: 0, A: 255}
+					set_background_rect_colour(graphical_context, margins.Layout(graphical_context, label.Layout).Size, colours_list[5])
+					// paint.Fill(&ops, color.NRGBA{R: 0, G: 0, B: 0, A: 255})
+					// Here we use the material.Clickable wrapper func to animate button clicks.
+					// return label.Layout(graphical_context)
+					return margins.Layout(graphical_context, label.Layout)
 				}),
 			)
 			event.Frame(graphical_context.Ops)
