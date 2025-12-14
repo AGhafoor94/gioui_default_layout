@@ -510,6 +510,7 @@ func side_layout_version_two(window *app.Window) error {
 func side_layout_version_three(window *app.Window) error {
 	var ops op.Ops
 	var (
+		menu_button        widget.Clickable
 		side_button_one    widget.Clickable
 		side_button_two    widget.Clickable
 		side_button_three  widget.Clickable
@@ -524,24 +525,39 @@ func side_layout_version_three(window *app.Window) error {
 		right_button_one, right_button_two, right_button_three,
 	}
 	colours_list := []color.NRGBA{
-		color.NRGBA{R: 0, G: 0, B: 0, A: 255},      // White
-		color.NRGBA{R: 0, G: 94, B: 184, A: 255},   // Blue
-		color.NRGBA{R: 0, G: 48, B: 135, A: 255},   // Dark Blue
-		color.NRGBA{R: 0, G: 150, B: 57, A: 255},   // Green
-		color.NRGBA{R: 0, G: 103, B: 71, A: 255},   // Dark Green
-		color.NRGBA{R: 255, G: 184, B: 28, A: 255}, // Warm Yellow
-		color.NRGBA{R: 237, G: 139, B: 0, A: 255},  // Orange
-		color.NRGBA{R: 0, G: 0, B: 0, A: 255},      // Black
+		{R: 0, G: 0, B: 0, A: 255},       // White
+		{R: 0, G: 94, B: 184, A: 255},    // Blue
+		{R: 0, G: 48, B: 135, A: 255},    // Dark Blue
+		{R: 0, G: 150, B: 57, A: 255},    // Green
+		{R: 0, G: 103, B: 71, A: 255},    // Dark Green
+		{R: 255, G: 184, B: 28, A: 255},  // Warm Yellow
+		{R: 237, G: 139, B: 0, A: 255},   // Orange
+		{R: 232, G: 232, B: 232, A: 255}, // Light Grey
+		{R: 240, G: 240, B: 240, A: 255}, // Lighter Grey
+		{R: 0, G: 0, B: 0, A: 255},       // Black
 	}
+	var side_bar_width float32 = 0.0
+	var right_content_width float32 = 1.0
+	show_side_bar := false
 	show_selection := 0
+
 	theme := material.NewTheme()
 	for {
 		switch event := window.Event().(type) {
 		case app.FrameEvent:
 			graphical_context := app.NewContext(&ops, event)
-
+			if menu_button.Clicked(graphical_context) {
+				if side_bar_width == 0.0 {
+					side_bar_width = 0.15
+					right_content_width = (1.0 - side_bar_width)
+				} else {
+					side_bar_width = 0.0
+					right_content_width = (1.0 - side_bar_width)
+				}
+				show_side_bar = !show_side_bar
+			}
 			if side_buttons[0].Clicked(graphical_context) {
-				fmt.Println("button1 was clicked")
+				fmt.Println("Button 1 was clicked")
 				show_selection = 1
 			}
 			if side_buttons[1].Clicked(graphical_context) {
@@ -560,21 +576,57 @@ func side_layout_version_three(window *app.Window) error {
 				Axis: layout.Vertical,
 			}.Layout(graphical_context,
 				layout.Rigid(func(graphical_context layout.Context) layout.Dimensions {
-					margins := layout.Inset{
-						Top:    unit.Dp(15),
-						Bottom: unit.Dp(15),
-						Left:   unit.Dp(0),
-						Right:  unit.Dp(0),
-					}
-					label := material.Label(theme, unit.Sp(35), "HEADING")
-					label.Alignment = text.Middle
-					label.Color = color.NRGBA{R: 255, G: 255, B: 255, A: 255}
-					set_background_rect_colour(graphical_context, margins.Layout(graphical_context, label.Layout).Size, colours_list[6])
-					// paint.Fill(&ops, color.NRGBA{R: 0, G: 0, B: 0, A: 255})
-					// Here we use the material.Clickable wrapper func to animate button clicks.
-					// return label.Layout(graphical_context)
-					return margins.Layout(graphical_context, label.Layout)
+					return layout.Flex{
+						Axis: layout.Horizontal,
+					}.Layout(graphical_context,
+						layout.Rigid(func(graphical_context layout.Context) layout.Dimensions {
+							margins := layout.Inset{
+								Top:    unit.Dp(13),
+								Bottom: unit.Dp(13),
+								Left:   unit.Dp(0),
+								Right:  unit.Dp(0),
+							}
+							menu_button_layout := material.Button(theme, &menu_button, "Menu")
+							set_background_rect_colour(graphical_context, material.Button(theme, &menu_button, "Menu").Layout(graphical_context).Size, colours_list[6])
+							// // paint.Fill(&ops, color.NRGBA{R: 0, G: 0, B: 0, A: 255})
+							// // Here we use the material.Clickable wrapper func to animate button clicks.
+							// // return label.Layout(graphical_context)
+							menu_button_layout.CornerRadius = unit.Dp(0)
+							menu_button_layout.Inset = margins
+							menu_button_layout.Background = colours_list[6]
+							return menu_button_layout.Layout(graphical_context)
+							// return menu_button_layout.Layout(graphical_context)
+							// label := material.Label(theme, unit.Sp(35), "Menu")
+							// label.Alignment = text.Middle
+							// label.Color = color.NRGBA{R: 255, G: 255, B: 255, A: 255}
+
+							// set_background_rect_colour(graphical_context, label.Layout(graphical_context).Size, colours_list[6])
+							// // paint.Fill(&ops, color.NRGBA{R: 0, G: 0, B: 0, A: 255})
+							// // Here we use the material.Clickable wrapper func to animate button clicks.
+							// // return label.Layout(graphical_context)
+							// // return margins.Layout(graphical_context, label.Layout)
+							// return label.Layout(graphical_context)
+						}),
+						layout.Flexed(1, func(graphical_context layout.Context) layout.Dimensions {
+							// margins := layout.Inset{
+							// 	Top:    unit.Dp(15),
+							// 	Bottom: unit.Dp(15),
+							// 	Left:   unit.Dp(0),
+							// 	Right:  unit.Dp(0),
+							// }
+							label := material.Label(theme, unit.Sp(35), "HEADING")
+							label.Alignment = text.Middle
+							label.Color = color.NRGBA{R: 255, G: 255, B: 255, A: 255}
+							set_background_rect_colour(graphical_context, label.Layout(graphical_context).Size, colours_list[6])
+							// paint.Fill(&ops, color.NRGBA{R: 0, G: 0, B: 0, A: 255})
+							// Here we use the material.Clickable wrapper func to animate button clicks.
+							// return label.Layout(graphical_context)
+							// return margins.Layout(graphical_context, label.Layout)
+							return label.Layout(graphical_context)
+						}),
+					)
 				}),
+
 				layout.Flexed(1, func(graphical_context layout.Context) layout.Dimensions {
 					// This flex splits the bottom pane horizontally.
 					return layout.Flex{
@@ -595,13 +647,13 @@ func side_layout_version_three(window *app.Window) error {
 
 						// }),
 
-						layout.Flexed(0.2, func(graphical_context layout.Context) layout.Dimensions {
+						layout.Flexed(side_bar_width, func(graphical_context layout.Context) layout.Dimensions {
 							// Here we position the button at the "north" or top-center of the available space.
-							set_background_rect_colour(graphical_context, left_side_bar(theme, graphical_context, side_buttons, colours_list).Size, color.NRGBA{R: 232, G: 232, B: 232, A: 255})
+							set_background_rect_colour(graphical_context, left_side_bar(theme, graphical_context, side_buttons, colours_list).Size, colours_list[7])
 							return left_side_bar(theme, graphical_context, side_buttons, colours_list)
 
 						}),
-						layout.Flexed(0.8, func(graphical_context layout.Context) layout.Dimensions {
+						layout.Flexed(right_content_width, func(graphical_context layout.Context) layout.Dimensions {
 							switch show_selection {
 							case 1:
 								return layout.Flex{
@@ -666,7 +718,7 @@ func side_layout_version_three(window *app.Window) error {
 									Axis: layout.Vertical,
 								}.Layout(graphical_context,
 									layout.Rigid(func(graphical_context layout.Context) layout.Dimensions {
-										label := material.Label(theme, unit.Sp(20), "Select Button Left")
+										label := material.Label(theme, unit.Sp(20), "Select Button to the Left")
 										label.Alignment = text.Start
 										return label.Layout(graphical_context)
 									}),
@@ -704,7 +756,7 @@ func side_layout_version_three(window *app.Window) error {
 					label := material.Label(theme, unit.Sp(15), "FOOTER")
 					label.Alignment = text.Middle
 					label.Color = color.NRGBA{R: 0, G: 0, B: 0, A: 255}
-					set_background_rect_colour(graphical_context, margins.Layout(graphical_context, label.Layout).Size, colours_list[5])
+					set_background_rect_colour(graphical_context, margins.Layout(graphical_context, label.Layout).Size, colours_list[8])
 					// paint.Fill(&ops, color.NRGBA{R: 0, G: 0, B: 0, A: 255})
 					// Here we use the material.Clickable wrapper func to animate button clicks.
 					// return label.Layout(graphical_context)
