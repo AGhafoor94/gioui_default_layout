@@ -29,7 +29,7 @@ func main() {
 	// BUILD: go build -ldflags -H=windowsgui
 	go func() {
 		window := new(app.Window)
-		window.Option(app.Title("Technical Accounts Apps"))
+		window.Option(app.Title("Application 1"))
 
 		main_window := main_window{window: window}
 
@@ -576,7 +576,7 @@ func side_layout_version_three(window *app.Window) error {
 						Left:   unit.Dp(0),
 						Right:  unit.Dp(0),
 					}
-					label := material.Label(theme, unit.Sp(35), "BOXI APP")
+					label := material.Label(theme, unit.Sp(35), "Application Version 1")
 					label.Alignment = text.Middle
 					label.Color = color.NRGBA{R: 255, G: 255, B: 255, A: 255}
 					set_background_rect_colour(graphical_context, margins.Layout(graphical_context, label.Layout).Size, colours_list[6])
