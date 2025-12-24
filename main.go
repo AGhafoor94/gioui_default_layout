@@ -3925,7 +3925,7 @@ func (state *main_data_struct) get_access_token_graph_api_call() (access_token s
 }
 func (state *main_data_struct) send_email_office_api_call(access_token string) (status string) {
 
-	url := fmt.Sprintf("%susers/NoReply@ELFSInvoicePortaloutlook.onmicrosoft.com/sendMail", graph_base_uri)
+	url := fmt.Sprintf("%susers/{user defined id}/sendMail", graph_base_uri)
 
 	var email_data_structure email_api_struct
 	email_data_structure.Message.Subject = state.text_input_array[1].text_inputted
